@@ -1,2 +1,2 @@
-# lua
-my lua project
+# LUA
+My Games developed with LUA
