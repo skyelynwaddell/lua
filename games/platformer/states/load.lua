@@ -14,8 +14,8 @@ function load.init()
     btn    = require "/scripts/buttons"
 
     game.load()
-    world = wf.newWorld(0,0)
-    player.load(world)
+    world = wf.newWorld(0,0,true)
+    player:new(world, 200, 350)
     camera.load()
 
     walls = {}

@@ -4,6 +4,17 @@ local camera = {}
 
 function camera.load()
     cam = _camera()
+
+       -- Immediately snap the camera to the player's position
+       local targetX = player.x
+       local targetY = player.y + (player.spriteHeight / 2)
+       
+       cam.x = math.ceil(math.max((game.screenW / game.scale) / 2, math.min(targetX, game.mapW - (game.screenW / game.scale) / 2))) * game.scale
+       cam.y = math.ceil(math.max((game.screenH / game.scale) / 2, math.min(targetY, game.mapH - (game.screenH / game.scale) / 2))) * game.scale
+       
+       -- Update camera position
+       cam:lookAt(cam.x, cam.y)
+
 end
 
 function camera.update()

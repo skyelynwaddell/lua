@@ -1,3 +1,4 @@
+
 local player = {}
 
 function player.load(world)
@@ -43,24 +44,25 @@ function player.load(world)
 end
 
 function player.update(dt)
+
     player.dirx = 0
     player.diry = 0
 
-    if love.keyboard.isDown("a") then
+    if btn.left then
         player.dirx = -1
         player.image_xscale = -player.image_scale
     end
 
-    if love.keyboard.isDown("d") then
+    if btn.right then
         player.dirx = 1
         player.image_xscale = player.image_scale
     end
 
-    if love.keyboard.isDown("w") then
+    if btn.up then
         player.diry = -1
     end
     
-    if love.keyboard.isDown("s") then
+    if btn.down then
         player.diry = 1
     end
 
