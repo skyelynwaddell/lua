@@ -23,6 +23,7 @@ function Coin.new(x,y)
     instance.physics.shape = love.physics.newRectangleShape(instance.width,instance.height)
     instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
     instance.physics.fixture:setSensor(true)
+    instance.physics.fixture:setUserData("Coin")
 
     --add instance to active table
     table.insert(ActiveCoins, instance)
@@ -77,17 +78,14 @@ function Coin.beginContact(a, b, collision)
     --loop through all coins
     for i, instance in ipairs(ActiveCoins) do
 
-        --check if a or b is a coin
-        if a == instance.physics.fixture or b == instance.physics.fixture then
-            
-            --check if a or b is the player
-            if a == Player.physics.fixture or b == Player.physics.fixture then
-                
-                --coin and player have collided\
-                Player:increaseCoins()
-                instance.toBeRemoved = true
-                return true
-            end
+        --the two objects we should check collisions between
+        local aFixture = instance.physics.fixture
+        local bFixture = Player.physics.fixture
+
+        if placeMeeting(a, b, aFixture, bFixture) then
+            --coin and player have collided
+            Player:increaseCoins()
+            instance.toBeRemoved = true
         end
     end
 end

@@ -24,6 +24,7 @@ function Enemy.new(x,y)
     instance.physics.shape = love.physics.newRectangleShape(instance.width,instance.height)
     instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
     instance.physics.fixture:setSensor(true)
+    instance.physics.fixture:setUserData("Enemy1")
 
     --insert into active table
     table.insert(ActiveEnemys, instance)
@@ -99,16 +100,13 @@ function Enemy.beginContact(a, b, collision)
     --loop through all Enemys
     for i, instance in ipairs(ActiveEnemys) do
 
-        --check if a or b is a Enemy
-        if a == instance.physics.fixture or b == instance.physics.fixture then
-            
-            --check if a or b is the player
-            if a == Player.physics.fixture or b == Player.physics.fixture then
-                
-                --Enemy and player have collided
-                Player:takeDamage(10)
-                return true
-            end
+        local aFixture = instance.physics.fixture
+        local bFixture = Player.physics.fixture
+
+        if placeMeeting(a,b,aFixture,bFixture) then
+            --Enemy and player have collided
+            Player:takeDamage(10)
+            return true
         end
     end
 end

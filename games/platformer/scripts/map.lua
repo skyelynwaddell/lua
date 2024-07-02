@@ -29,6 +29,7 @@ function Map:init()
 
     --spawn all entities to the map
     self:spawnEntities()
+    self:setupWalls()
 end
 
 --LOAD
@@ -37,6 +38,7 @@ function Map:load()
     self.currentLevel = "map2"
 
     --create new world
+    love.physics.setMeter(16)  -- Set the scale for physics calculations
     World = love.physics.newWorld(0,0)
     World:setCallbacks(beginContact, endContact)
 
@@ -76,6 +78,17 @@ function Map:clean()
     Coin:removeAll()
     Spike:removeAll()
     Enemy:removeAll()
+end
+
+--SETUP WALLS
+function Map:setupWalls()
+    -- Iterate through wall objects and create fixtures
+    for _, wall in ipairs(self.wallLayer.objects) do
+        local body = love.physics.newBody(World, wall.x + wall.width / 2, wall.y + wall.height / 2, "static")
+        local shape = love.physics.newRectangleShape(wall.width, wall.height)
+        local fixture = love.physics.newFixture(body, shape)
+        fixture:setUserData("Wall")
+    end
 end
 
 return Map

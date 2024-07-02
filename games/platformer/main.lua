@@ -16,6 +16,7 @@ local PlayerBullet = require("scripts/playerbullet")
 
 --GENERAL FUNCTIONS
 require("scripts/utils/lerp")
+require("scripts/utils/placeMeeting")
 
 --set pixelated filter
 love.graphics.setDefaultFilter("nearest", "nearest") 
@@ -77,10 +78,17 @@ end
 
 --BEGIN CONTACT COLLISION
 function beginContact(a, b, collision)
+    if a:getUserData() and a:getUserData().beginContact then
+        a:getUserData():beginContact(a, b, collision)
+    end
+    if b:getUserData() and b:getUserData().beginContact then
+        b:getUserData():beginContact(b, a, collision)
+    end
+
     if Coin.beginContact(a, b, collision) then return end
     if Spike.beginContact(a, b, collision) then return end
     if Enemy.beginContact(a, b, collision) then return end
-    if PlayerBullet.beginContact(a, b, collision) then return end
+    if PlayerBullet:beginContact(a, b, collision) then return end
     Player:beginContact(a, b, collision)
 end
 

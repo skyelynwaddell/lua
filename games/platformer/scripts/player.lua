@@ -76,6 +76,7 @@ function Player:physicBodyInit()
     self.physics.body:setFixedRotation(true)
     self.physics.shape = love.physics.newRectangleShape(self.physics.width, self.physics.height)
     self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape)
+    Player.physics.fixture:setUserData("Player")
 
 end
 
