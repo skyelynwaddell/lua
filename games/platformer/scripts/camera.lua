@@ -1,41 +1,58 @@
-_camera = require "/libraries/camera" --camera
+local Map = require("scripts/map")
+local GUI = require("scripts/gui")
 
-local camera = {}
+local Camera = {
+    x = 0,               --camera y
+    y = 0,               --camera y
+    scale = 3,           --camera scale
+    targetX = 0,         --camera target x
+    targetY = 0,         --camera target y
+    smoothingSpeed = 10, --camera smoothing speed
+    guiGap = 34          --for the spacing between offset of the top GUI
+}
 
-function camera.load()
-    cam = _camera()
+--APPLY
+function Camera:apply()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.push()
+    love.graphics.scale(self.scale, self.scale)
+    love.graphics.translate(-self.x, -self.y)
 
-       -- Immediately snap the camera to the player's position
-       local targetX = player.x
-       local targetY = player.y + (player.spriteHeight / 2)
-       
-       cam.x = math.ceil(math.max((game.screenW / game.scale) / 2, math.min(targetX, game.mapW - (game.screenW / game.scale) / 2))) * game.scale
-       cam.y = math.ceil(math.max((game.screenH / game.scale) / 2, math.min(targetY, game.mapH - (game.screenH / game.scale) / 2))) * game.scale
-       
-       -- Update camera position
-       cam:lookAt(cam.x, cam.y)
-
+    love.graphics.translate(0, GUI.height / self.scale)
 end
 
-function camera.update()
-    -- Calculate camera target position
-    local targetX = player.x -- Center on player's horizontal position
-    local targetY = player.y + (player.spriteHeight / 2) -- Center on player's vertical position
-
-    -- Clamp camera target position
-    local halfScreenW = (game.screenW / game.scale) / 2
-    local halfScreenH = (game.screenH / game.scale) / 2
-
-    targetX = math.ceil(math.max(halfScreenW, math.min(targetX, game.mapW - halfScreenW))) * game.scale
-    targetY = math.ceil(math.max(halfScreenH, math.min(targetY, game.mapH - halfScreenH))) * game.scale
-
-    -- Interpolate camera movement for smooth follow
-    local smoothness = 5
-    cam.x = math.floor(cam.x + (targetX - cam.x) * smoothness * love.timer.getDelta())
-    cam.y = math.floor(cam.y + (targetY - cam.y) * smoothness * love.timer.getDelta())
-
-    -- Update camera position
-    cam:lookAt(cam.x, cam.y)
+--CLEAR
+function Camera:clear()
+    love.graphics.pop()
 end
 
-return camera
+--SET TARGET POSITION
+function Camera:setTargetPosition(x, y)
+    self.targetX = x - love.graphics.getWidth() / 2 / self.scale
+    self.targetY = y - love.graphics.getHeight() / 2 / self.scale
+end
+
+--UPDATE 
+function Camera:update(dt)
+    -- Interpolate towards the target position
+    self.x = lerp(self.x, self.targetX, self.smoothingSpeed * dt)
+    self.y = lerp(self.y, self.targetY, self.smoothingSpeed * dt)
+
+    -- Constrain the camera to the map boundaries horizontally
+    local halfScreenWidth = love.graphics.getWidth() / 2 / self.scale
+    if self.x < 0 then
+        self.x = 0
+    elseif self.x + 2 * halfScreenWidth > Map.width then
+        self.x = Map.width - 2 * halfScreenWidth
+    end
+
+    -- Constrain the camera to the map boundaries vertically
+    local halfScreenHeight = love.graphics.getHeight() / 2 / self.scale
+    if self.y < 0 then
+        self.y = 0
+    elseif self.y + 2 * halfScreenHeight > Map.height then
+        self.y = Map.height - 2 * halfScreenHeight
+    end
+end
+
+return Camera
