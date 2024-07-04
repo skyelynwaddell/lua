@@ -9,7 +9,7 @@ Class = require("libraries/hump/class")
 local GUI = require("scripts/gui")
 local Map = require("scripts/map")
 local Camera = require("scripts/camera")
-local Coin = require("scripts/coin")
+local Coin = require("scripts.objects.coin")
 local Spike = require("scripts/spike")
 local Enemy = require("scripts/enemy1")
 local PlayerBullet = require("scripts/playerbullet")
@@ -37,8 +37,8 @@ function love.update(dt)
     World:update(dt)
     GUI:update(dt)
     Player:update(dt)
-    Coin.updateAll(dt)
-    PlayerBullet.updateAll(dt)
+    Coin:updateAll(dt)
+    PlayerBullet:updateAll(dt)
     Enemy.updateAll(dt)
     Camera:setTargetPosition(Player.x, Player.y)
     Camera:update(dt)
@@ -50,9 +50,9 @@ function love.draw()
     --Rendered within camera view
 
     Map.level:draw(-Camera.x,-Camera.y+Camera.guiGap, Camera.scale, Camera.scale)
+    PlayerBullet:drawAll()
     Player:draw()
-    Coin.drawAll()
-    PlayerBullet.drawAll()
+    Coin:drawAll()
     Enemy.drawAll()
     Spike.drawAll()
 
@@ -85,7 +85,7 @@ function beginContact(a, b, collision)
         b:getUserData():beginContact(b, a, collision)
     end
 
-    if Coin.beginContact(a, b, collision) then return end
+    if Coin:beginContact(a, b, collision) then return end
     if Spike.beginContact(a, b, collision) then return end
     if Enemy.beginContact(a, b, collision) then return end
     if PlayerBullet:beginContact(a, b, collision) then return end

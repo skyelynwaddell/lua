@@ -1,5 +1,5 @@
 local STI = require("libraries/sti")
-local Coin = require("scripts/coin")
+local Coin = require("scripts.objects.coin")
 local Spike = require("scripts/spike")
 local Enemy = require("scripts/enemy1")
 

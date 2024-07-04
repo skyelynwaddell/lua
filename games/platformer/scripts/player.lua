@@ -15,8 +15,10 @@ function Player:load()
     self.maxSpd = 200
     self.acceleration = 2000
     self.friction = 6000
-    self.gravity = 1000
+    self.gravity = 500
 
+    self.bulletX = self.x
+    self.bulletY = self.y
     self.bulletSpd = 200
     self.bulletDir = 0
 
@@ -87,8 +89,17 @@ function Player:setState()
     -- Default state to idle
     self.state = "idle"
 
+    self.bulletX = self.x
+
+    if self.x ~= nil then
+        self.bulletY = self.y - 6
+    end
+
     -- CROUCH
     if btn.down and self.yspd == 0 then
+
+        self.bulletY = self.y + 11
+
         if self.xspd ~= 0 then
             self.state = "crouchwalk"
         else
@@ -119,39 +130,39 @@ function Player:loadAssets()
     self.animation = {timer = 0, rate = 0.1}
 
     --IDLE
-    self.animation.idle = {total = 4, current = 1, img = {}}
+    self.animation.idle = {total = 1, current = 1, img = {}}
     for i = 1, self.animation.idle.total do
-        self.animation.idle.img[i] = love.graphics.newImage("sprites/players/idle/".. i ..".png")
+        self.animation.idle.img[i] = love.graphics.newImage("sprites/player_robot/idle/".. i ..".png")
     end
 
     --RUN
     self.animation.run  = {total = 6, current = 1, img = {}}
     for i = 1, self.animation.run.total do
-        self.animation.run.img[i] = love.graphics.newImage("sprites/players/run/".. i ..".png")
+        self.animation.run.img[i] = love.graphics.newImage("sprites/player_robot/run/".. i ..".png")
     end
 
     --JUMP
     self.animation.jump = {total = 1, current = 1, img = {}}
     for i = 1, self.animation.jump.total do
-        self.animation.jump.img[i] = love.graphics.newImage("sprites/players/fall/".. i ..".png")
+        self.animation.jump.img[i] = love.graphics.newImage("sprites/player_robot/jump/".. i ..".png")
     end
 
     --FALL
     self.animation.fall = {total = 1, current = 1, img = {}}
     for i = 1, self.animation.fall.total do
-        self.animation.fall.img[i] = love.graphics.newImage("sprites/players/fall/".. i ..".png")
+        self.animation.fall.img[i] = love.graphics.newImage("sprites/player_robot/jump/".. i ..".png")
     end
 
     --CROUCH
-    self.animation.crouch = {total = 4, current = 1, img = {}}
+    self.animation.crouch = {total = 1, current = 1, img = {}}
     for i = 1, self.animation.crouch.total do
-        self.animation.crouch.img[i] = love.graphics.newImage("sprites/players/crouch/".. i ..".png")
+        self.animation.crouch.img[i] = love.graphics.newImage("sprites/player_robot/crouch/".. i ..".png")
     end
 
     --CROUCHWALK
-    self.animation.crouchwalk = {total = 4, current = 1, img = {}}
+    self.animation.crouchwalk = {total = 1, current = 1, img = {}}
     for i = 1, self.animation.crouchwalk.total do
-        self.animation.crouchwalk.img[i] = love.graphics.newImage("sprites/players/crouch/".. i ..".png")
+        self.animation.crouchwalk.img[i] = love.graphics.newImage("sprites/player_robot/crouch/".. i ..".png")
     end
 
     --current image
@@ -367,7 +378,7 @@ end
 --SHOOT
 function Player:shoot(key)
     if key == btn.p.b then 
-        local bullet = Bullet.new(self.x,self.y,self.bulletSpd,self.bulletDir)
+        local bullet = Bullet.new(self.bulletX, self.bulletY,self.bulletSpd,self.bulletDir)
     end
 end
 
@@ -378,7 +389,7 @@ function Player:draw()
         love.graphics.draw(self.animation.draw, self.x, self.y, 0, self.xscale, self.yscale, self.animation.width/2, self.animation.height/2 + 4)
         love.graphics.setColor(1,1,1,1)
     end
-    love.graphics.rectangle("line", self.x - self.physics.width/2, self.y - self.physics.height/2, self.physics.width, self.physics.height)
+    --love.graphics.rectangle("line", self.x - self.physics.width/2, self.y - self.physics.height/2, self.physics.width, self.physics.height)
 
     Player:setDirection()
 
