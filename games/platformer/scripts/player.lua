@@ -1,4 +1,4 @@
-local Bullet = require("scripts/playerbullet")
+local Bullet = require("scripts.objects.playerbullet")
 
 local Player = {}
 

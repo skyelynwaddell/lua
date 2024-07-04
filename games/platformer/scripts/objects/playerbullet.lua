@@ -1,4 +1,5 @@
-local Object = require("scripts/objects/object")
+--PLAYER BULLET
+local Object = require("scripts.class.object")
 local PlayerBullet = {}
 PlayerBullet.__index = PlayerBullet
 local ActivePlayerBullets = {}
@@ -26,6 +27,7 @@ end
 --UPDATE
 function PlayerBullet:update(dt)
     self:Move(self.spd, self.dir)
+    self:checkRemove()
 end
 
 --UPDATE ALL

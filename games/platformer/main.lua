@@ -10,9 +10,9 @@ local GUI = require("scripts/gui")
 local Map = require("scripts/map")
 local Camera = require("scripts/camera")
 local Coin = require("scripts.objects.coin")
-local Spike = require("scripts/spike")
-local Enemy = require("scripts/enemy1")
-local PlayerBullet = require("scripts/playerbullet")
+local Spike = require("scripts.objects.spike")
+local Enemy = require("scripts.enemys.enemy")
+local PlayerBullet = require("scripts.objects.playerbullet")
 
 --GENERAL FUNCTIONS
 require("scripts/utils/lerp")
@@ -23,7 +23,7 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 
 --LOAD
 function love.load()
-    Enemy.loadAssets()
+    Enemy:loadAssets()
 
     Map:load()
     GUI:load()
@@ -39,7 +39,7 @@ function love.update(dt)
     Player:update(dt)
     Coin:updateAll(dt)
     PlayerBullet:updateAll(dt)
-    Enemy.updateAll(dt)
+    Enemy:updateAll(dt)
     Camera:setTargetPosition(Player.x, Player.y)
     Camera:update(dt)
 end
@@ -53,8 +53,8 @@ function love.draw()
     PlayerBullet:drawAll()
     Player:draw()
     Coin:drawAll()
-    Enemy.drawAll()
-    Spike.drawAll()
+    Enemy:drawAll()
+    Spike:drawAll()
 
     Camera:clear()
     --Rendered not within camera
@@ -86,8 +86,8 @@ function beginContact(a, b, collision)
     end
 
     if Coin:beginContact(a, b, collision) then return end
-    if Spike.beginContact(a, b, collision) then return end
-    if Enemy.beginContact(a, b, collision) then return end
+    if Spike:beginContact(a, b, collision) then return end
+    if Enemy:beginContact(a, b, collision) then return end
     if PlayerBullet:beginContact(a, b, collision) then return end
     Player:beginContact(a, b, collision)
 end

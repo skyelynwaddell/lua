@@ -1,7 +1,7 @@
 local STI = require("libraries/sti")
 local Coin = require("scripts.objects.coin")
-local Spike = require("scripts/spike")
-local Enemy = require("scripts/enemy1")
+local Spike = require("scripts.objects.spike")
+local Enemy = require("scripts.enemys.enemy")
 
 local Map = {}
 

@@ -1,3 +1,4 @@
+--OBJECT CLASS
 local Object = {}
 Object.__index = Object
 
@@ -75,6 +76,11 @@ function Object:DrawSelf()
     love.graphics.draw(self.img,self.x,self.y, 0, 1, 1, self.width/2, self.height/2)
 end
 
+--DRAW ANIMATED SELF
+function Object:DrawAnimatedSelf()
+    love.graphics.draw(self.animation.draw,self.x,self.y, 0, 1, 1, self.width/2, self.height/2)
+end
+
 --BEGIN CONTACT
 function Object:BeginContact(data)
 
@@ -117,7 +123,7 @@ function Object:BeginLayerContact(a, b, layerName)
     end
 end
 
---MOVE BULLET
+--MOVE OBJECT
 function Object:Move(spd, dir)
     local dx = spd * math.cos(dir)
     local dy = spd * math.sin(dir)
@@ -152,5 +158,25 @@ function Object.dir(_dir)
 
     return dir
 end
+
+--ANIMATE
+function Object:animate(dt)
+    self.animation.timer = self.animation.timer + dt
+    if self.animation.timer > self.animation.rate then
+        self.animation.timer = 0
+        self:setNewFrame()
+    end
+end
+
+--SET NEW FRAME
+function Object:setNewFrame()
+    local anim = self.animation[self.state]
+
+    --increment by 1, and reset to 1 when we reach animation total frames
+    anim.current = (anim.current % anim.total) + 1
+
+    self.animation.draw = anim.img[anim.current]
+end
+
 
 return Object

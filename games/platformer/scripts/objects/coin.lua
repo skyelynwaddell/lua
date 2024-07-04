@@ -1,9 +1,10 @@
+--COIN
 local Coin = {}
 Coin.__index = Coin
 
 local ActiveCoins = {}
 local Player = require("scripts/player")
-local Object = require("scripts/objects/object")
+local Object = require("scripts.class.object")
 
 -- inherit from the object class
 setmetatable(Coin, Object)
@@ -53,9 +54,15 @@ function Coin:remove()
     self:Remove(ActiveCoins)
 end
 
+--REMOVE ALL
+function Coin:removeAll()
+    ActiveCoins = self:RemoveAll(ActiveCoins)
+end
+
 --BEGIN CONTACT
 function Coin:beginContact(a, b, collision)
 
+    -- PLAYER / COIN COLLISION
     local collisionCallback = function()
         Player:increaseCoins()
     end
@@ -68,11 +75,6 @@ function Coin:beginContact(a, b, collision)
         callback = collisionCallback
     })
 
-end
-
---REMOVE ALL
-function Coin:removeAll()
-    ActiveCoins = self:RemoveAll(ActiveCoins)
 end
 
 return Coin
