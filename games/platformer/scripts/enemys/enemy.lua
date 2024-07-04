@@ -67,6 +67,11 @@ function Enemy:drawAll()
     self:DrawAll(ActiveEnemys)
 end
 
+--REMOVE ALL
+function Enemy:removeAll()
+    self:RemoveAll(ActiveEnemys)
+end
+
 --BEGIN CONTACT
 function Enemy:beginContact(a, b, collision)
 
@@ -84,9 +89,6 @@ function Enemy:beginContact(a, b, collision)
     })
 end
 
---REMOVE ALL
-function Enemy:removeAll()
-    self:RemoveAll(ActiveEnemys)
-end
+
 
 return Enemy
