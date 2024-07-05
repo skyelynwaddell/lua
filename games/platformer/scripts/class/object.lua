@@ -81,6 +81,28 @@ function Object:DrawAnimatedSelf()
     love.graphics.draw(self.animation.draw,self.x,self.y, 0, 1, 1, self.width/2, self.height/2)
 end
 
+function Object:colliding(aUserData, bUserData, colliderType, collisionCallback)
+    if aUserData == self or bUserData == self then
+        if type(aUserData) == "table" and aUserData.type == colliderType then
+            for k, v in pairs(aUserData) do
+                if k == "hp" then
+                    print(k, v.current)
+                    print(aUserData.type)
+                    collisionCallback(aUserData)
+                end
+            end
+        elseif type(bUserData) == "table" and bUserData.type == colliderType then
+            for k, v in pairs(bUserData) do
+                if k == "hp" then
+                    print(k, v.current)
+                    print(bUserData.type)
+                    collisionCallback(bUserData)
+                end
+            end
+        end
+    end
+end
+
 --BEGIN CONTACT
 function Object:BeginContact(data)
 

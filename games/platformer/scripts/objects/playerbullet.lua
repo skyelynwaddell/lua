@@ -9,6 +9,7 @@ setmetatable(PlayerBullet, Object)
 function PlayerBullet.new(x, y, spd, dir)
     local instance = setmetatable({}, PlayerBullet)
 
+    instance.type = "PlayerBullet"
     instance.x = x
     instance.y = y
     instance.spd = spd
@@ -19,8 +20,8 @@ function PlayerBullet.new(x, y, spd, dir)
     instance.width = instance.img:getWidth()
     instance.height = instance.img:getHeight()
 
-    PlayerBullet.usePhysics(instance,instance,false)
-   
+    PlayerBullet.usePhysics(instance, instance, false)
+
     PlayerBullet:addInstance(ActivePlayerBullets, instance)
 end
 
@@ -52,9 +53,61 @@ end
 
 --BEGIN CONTACT
 function PlayerBullet:beginContact(a, b, collision)
-    if self:BeginLayerContact(a,b, "Wall") then
+    if self:BeginLayerContact(a, b, "Wall") then
         self.toBeRemoved = true
     end
+
+    local _a = a:getUserData()
+    local _b = b:getUserData()
+
+    local function _enemyCollisionCallback(obj)
+        -- body
+        obj:takeDamage(10)
+    end
+
+    if _a == self or _b == self then
+        if type(_a) == "table" and _a.type == "Enemy" then
+            for k, v in pairs(_a) do
+                if k == "hp" then
+                    print(k, v.current)
+                    print(_a.type)
+                    _enemyCollisionCallback(_a)
+                end
+            end
+        elseif type(_b) == "table" and _b.type == "Enemy" then
+            for k, v in pairs(_b) do
+                if k == "hp" then
+                    print(k, v.current)
+                    print(_b.type)
+                    _enemyCollisionCallback(_b)
+                end
+            end
+        end
+    end
+
+
+    -- self:BeginContact({
+    --     a=a, b=b,
+    --     table = ActivePlayerBullets,
+    --     collisionObj = Enemy,
+    --     destroyOnContact = false,
+    --     callback = _callback
+    -- })
+
+
+
+    -- -- PLAYER / ENEMY COLLISION
+    -- local playerCollisionCallback = function()
+    --     print("ouch")
+    -- end
+
+    -- self:BeginContact({
+    --     a=a, b=b,
+    --     table = ActivePlayerBullets,
+    --     collisionObj = Enemy,
+    --     destroyOnContact = false,
+    --     callback = playerCollisionCallback
+    -- })
 end
 
 --REMOVE ALL

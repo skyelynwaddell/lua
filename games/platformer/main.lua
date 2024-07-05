@@ -11,7 +11,7 @@ local Map = require("scripts/map")
 local Camera = require("scripts/camera")
 local Coin = require("scripts.objects.coin")
 local Spike = require("scripts.objects.spike")
-local Enemy = require("scripts.enemys.enemy")
+Enemy = require("scripts.enemys.enemy")
 local PlayerBullet = require("scripts.objects.playerbullet")
 
 --GENERAL FUNCTIONS

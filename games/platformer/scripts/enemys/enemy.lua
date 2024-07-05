@@ -4,6 +4,7 @@ Enemy.__index = Enemy
 local ActiveEnemys = {}
 local Player = require("scripts/player")
 local Object = require("scripts.class.object")
+local PlayerBullet = require("scripts/objects/playerbullet")
 
 setmetatable(Enemy, Object)
 
@@ -12,8 +13,13 @@ function Enemy.new(x,y)
     local instance = setmetatable({}, Enemy)
 
     --instance properties
+    instance.type = "Enemy"
     instance.x = x
     instance.y = y
+    instance.width = 16
+    instance.height = 16
+    instance.hp = { current = 100, max = 100 }
+    instance.toBeRemoved = false
 
     --instance animation / sprites
     instance.state = "idle"
@@ -22,7 +28,7 @@ function Enemy.new(x,y)
     instance.animation.run = {total=4, current=1, img=Enemy.runAnim}
     instance.animation.draw = instance.animation.idle.img[1]
 
-    Enemy.usePhysics(instance, "Enemy", false)
+    Enemy.usePhysics(instance, instance, false)
     Enemy:addInstance(ActiveEnemys, instance)
 end
 
@@ -67,16 +73,36 @@ function Enemy:drawAll()
     self:DrawAll(ActiveEnemys)
 end
 
+--REMOVE
+function Enemy:remove()
+    self:Remove(ActiveEnemys)
+end
+
 --REMOVE ALL
 function Enemy:removeAll()
     self:RemoveAll(ActiveEnemys)
 end
 
+--TAKE DAMAGE
+function Enemy:takeDamage(amount)
+    if self.hp.current > 0 then
+        self.hp.current = self.hp.current - amount
+    else
+        self:die()
+    end
+end
+
+--DIE
+function Enemy:die()
+    self.toBeRemoved = true
+end
+
+
 --BEGIN CONTACT
 function Enemy:beginContact(a, b, collision)
 
     -- PLAYER / ENEMY COLLISION
-    local collisionCallback = function()
+    local playerCollisionCallback = function()
         Player:takeDamage(10)
     end
 
@@ -85,7 +111,7 @@ function Enemy:beginContact(a, b, collision)
         table = ActiveEnemys,
         collisionObj = Player,
         destroyOnContact = false,
-        callback = collisionCallback
+        callback = playerCollisionCallback
     })
 end
 
